@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Presentation</title>
+  <link rel="stylesheet" href="" />
+  <style>
+    /* Reset */
+    .api{
+      text-align: center;
+      align-items: center;
+    }
+    .columns{
+      display: flex;
+      flex-direction: column;
+       }
+    .techno{
+      text-align: left;
+      font-size: 1.2rem;
+      line-height: 1.6;
+      color: white;
+    }
+    .top .future1 h3, .bot .future2 h3{
+      color: #00ff99;
+      text-shadow: 0 0 12px #00ff99;
+      margin-bottom: 10px;
+      
+    }
+
+    .tops{
+      color: #00ff99;
+      text-shadow: 0 0 12px #00ff99;
+      margin-bottom: 10px;
+    }
+    .top .future1 p, .bot .future2 p{
+      color: white;
+      font-size: 1.1rem;
+      line-height: 1.6;
+      
+    }
+    .future1,.future2{
+      padding-right: 20px;
+      padding-left: 20px;
+      gap: 50px;
+      border-radius: 10em;
+      border-color: #e6f9ef;
+    }
+    .top{
+      display: flex;
+      flex-direction: row;
+      width: auto;
+      height: auto;
+      
+    
+    }
+
+
+      .bot{
+        display: flex;
+        flex-direction: row;
+        width: auto;
+        height: auto
+      }
+    * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; 
+   }
+
+/* Body */
+body {
+  background: black;
+  color: white;
+  font-family: 'Poppins', 'Courier New', monospace;
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: 100vh;
+}
+
+/* Fullscreen Matrix */
+#matrixCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+}
+
+/* Presentation Container */
+.presentation {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 100px 0;
+  gap: 120px;
+}
+
+/* Each "Slide" like a PPT page */
+.slide {
+  width: 90%;
+  max-width: 10000px;
+  height: 1150px; /* mimic PPT size */
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(0, 255, 128, 0.6);
+  box-shadow: 0 0 25px rgba(0, 255, 128, 0.25);
+  backdrop-filter: blur(6px);
+  border-radius: 14px;
+  text-align: center;
+  padding: 60px;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.slide:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 40px rgba(0, 255, 128, 0.4);
+}
+
+/* Text */
+h1, h2 {
+  color: #00ff99;
+  text-shadow: 0 0 12px #00ff99;
+  margin-bottom: 20px;
+}
+
+p, li {
+  color: #ccffcc;
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+ul {
+  list-style: none;
+  padding-top: 10px;
+}
+
+li::before {
+  content: "• ";
+  color: #00ff99;
+}
+
+/* Highlighted text */
+.highlight {
+  color: #00ff99;
+  text-shadow: 0 0 6px #00ff99;
+}
+
+
+
+
+    /* Layout fixes to prevent text superimposing */
+    
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #000; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+    /* Presentation container uses column flow and a gap so slides cannot overlap */
+    .presentation {
+      position: relative;
+      z-index: 2;
+      max-width: 1000px;
+      margin: 6vh auto;
+      display: flex;
+      flex-direction: column;
+      gap: 28px; /* ensures spacing between slides */
+      padding: 0 16px;
+    }
+
+    .slide h1{
+      font-size: 2.96em;
+    }
+
+    .slide {
+      display: block;              /* ensure block flow */
+      position: relative;         /* keep normal document flow */
+      width: 100%;
+      padding: 40px 28px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 12px;
+      color: #e6f9ef;
+      min-height: 220px;
+      overflow: visible;          /* allow animated cards to be visible */
+      isolation: isolate;         /* prevent blending artifacts */
+    }
+
+    .slide h2, .slide h1 { color: #bfffdc; margin-bottom: 12px; }
+    .slide p { color: #cfeee0; line-height: 1.45; margin: 0 0 12px 0; }
+
+    /* Structured cards for problems/solutions */
+    .solutions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 18px;
+      margin-top: 18px;
+      align-items: start;         /* top-align cards to avoid overlap */
+    }
+
+    .card {
+      background: rgba(0,0,0,0.25);
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 18px;
+      border-radius: 10px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+      transform: translateY(12px);
+      opacity: 0;
+      min-height: 140px;          /* ensure consistent card height */
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .card h3 { margin: 0 0 8px 0; color: #fff; font-size: 1.05rem; }
+    .meta { font-weight: 600; color: #79ffd6; margin-bottom: 6px; }
+    .card p { margin: 0; color: #d8efe6; }
+
+    .benefit {
+      display: inline-block;
+      margin-top: auto;           /* push pill to bottom when space allows */
+      padding: 6px 10px;
+      background: rgba(121,255,214,0.12);
+      color: #a6fff0;
+      border-radius: 999px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      align-self: flex-start;
+    }
+
+    /* reveal animation */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px) scale(0.995); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .card.visible { animation: fadeUp 420ms cubic-bezier(.2,.9,.25,1) forwards; }
+
+    .slide-title { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+    .slide-index {
+      background: rgba(255,255,255,0.06);
+      color: #dfffee;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-weight:700;
+      font-size:0.9rem;
+    }
+
+    /* Canvas background behind content */
+    canvas#matrixCanvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      display:block;
+      pointer-events: none; /* prevent canvas from blocking interactions */
+    }
+
+    /* responsive tweaks */
+    @media (max-width:700px){
+      .slide { padding: 22px; min-height: auto; }
+      .slide p { font-size: 0.95rem; }
+      .presentation { margin: 4vh auto; gap: 18px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Fullscreen Matrix Background -->
+  <canvas id="matrixCanvas"></canvas>
+
+  <!-- Presentation Container -->
+  <div class="presentation">
+    <section class="slide"><h1>PERPLEXITY AI <br>Revolutionizing Information Access</h1><p></p></section>
+    
+
+
+
+
+
+
+
+
+
+
+
+    <section class="slide"><div class="slide-title">
+        <div class="slide-index">Slide 1</div>
+        <h2>History of Perplexity AI</h2>
+      </div>
+      <p class="lead">Key milestones in the development of Perplexity AI.</p>
+      <br>
+      <div class="History">
+        <img src="bd24bacd-092a-4f38-b855-bc4ef64d27c2.png" width="900" height="900">
+      </div>
+      
+    </section>
+
+    <!-- Slide 5: Perplexity AI – Key Problems Solved -->
+    <section class="slide" id="slide-5">
+      <div class="slide-title">
+        <div class="slide-index">Slide 2</div>
+        <h2>Perplexity AI – Key Problems Solved</h2>
+      </div>
+      <p class="lead">Compact overview: problems, Perplexity's solutions, and benefits.</p>
+
+      <div class="solutions-grid">
+        <article class="card" data-order="0">
+          <div class="meta">Scattered Search Results</div>
+          <h3>Problem</h3>
+          <p>Traditional search engines show endless links.</p>
+          <h3>Perplexity's Solution</h3>
+          <p>Provides summarized, well-structured answers with reliable citations.</p>
+          <div class="benefit">Benefit: Faster discovery</div>
+        </article>
+
+        <article class="card" data-order="1">
+          <div class="meta">Poor Understanding of Natural Questions</div>
+          <h3>Problem</h3>
+          <p>Keyword-based search misses user intent and context.</p>
+          <h3>Perplexity's Solution</h3>
+          <p>Uses Natural Language Processing (NLP) to interpret intent for more accurate results.</p>
+          <div class="benefit">Benefit: Context-aware accuracy</div>
+        </article>
+
+        <article class="card" data-order="2">
+          <div class="meta">Lack of Transparency</div>
+          <h3>Problem</h3>
+          <p>Many AI tools hide their sources.</p>
+          <h3>Perplexity's Solution</h3>
+          <p>Ensures transparency by including inline citations for every response.</p>
+          <div class="benefit">Benefit: Trustworthy answers</div>
+        </article>
+
+        <article class="card" data-order="3">
+          <div class="meta">Outdated or Static Information</div>
+          <h3>Problem</h3>
+          <p>Models trained on stale data can return outdated answers.</p>
+          <h3>Perplexity's Solution</h3>
+          <p>Fetches real-time web content to keep answers up to date.</p>
+          <div class="benefit">Benefit: Current, relevant results</div>
+        </article>
+
+        <article class="card" data-order="4">
+          <div class="meta">Difficulty Synthesizing Multiple Sources</div>
+          <h3>Problem</h3>
+          <p>Users read many pages to form one coherent idea.</p>
+          <h3>Perplexity's Solution</h3>
+          <p>Summarizes and blends key insights from multiple sources into one concise answer.</p>
+          <div class="benefit">Benefit: Simplified research</div>
+        </article>
+
+        <article class="card" data-order="5">
+          <div class="meta">Lack of Context in Search</div>
+          <h3>Problem</h3>
+          <p>Standard searches treat queries independently.</p>
+          <h3>Perplexity's Solution</h3>
+          <p>Maintains conversation flow so follow-ups are natural and contextual.</p>
+          <div class="benefit">Benefit: Continuous conversation</div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Slide 6: Additional Solutions & Benefits -->
+    <section class="slide" id="slide-6">
+      <div class="slide-title">
+        <div class="slide-index">Slide 3</div>
+        <h2>Additional Solutions & Benefits</h2>
+      </div>
+      <p class="lead">Practical enhancements that improve research workflows and trust.</p>
+
+      <div class="solutions-grid">
+        <article class="card" data-order="0">
+          <div class="meta">Difficulty Understanding Complex Documents</div>
+          <h3>Challenge</h3>
+          <p>Long technical files are time-consuming to analyze.</p>
+          <h3>Perplexity's Solution</h3>
+          <p>Summarizes uploaded documents and extracts insights efficiently (Pro mode).</p>
+          <div class="benefit">Benefit: Fast document insights</div>
+        </article>
+
+        <article class="card" data-order="1">
+          <div class="meta">Inefficient Research Workflows</div>
+          <h3>Challenge</h3>
+          <p>Researchers switch between multiple tools to search, read, and summarize.</p>
+          <h3>Perplexity's Solution</h3>
+          <p>Integrates search, summaries, citations, and chat in one workspace.</p>
+          <div class="benefit">Benefit: Higher productivity</div>
+        </article>
+
+        <article class="card" data-order="2">
+          <div class="meta">Inaccurate or Hallucinated Answers</div>
+          <h3>Challenge</h3>
+          <p>Some AI models generate false or unverifiable facts.</p>
+          <h3>Perplexity's Solution</h3>
+          <p>Verifies facts and provides source-backed, trustworthy answers.</p>
+          <div class="benefit">Benefit: Improved factual accuracy</div>
+        </article>
+
+        <article class="card" data-order="3">
+          <div class="meta">Difficulty Accessing Expert Knowledge</div>
+          <h3>Challenge</h3>
+          <p>Academic or technical topics are often inaccessible.</p>
+          <h3>Perplexity's Solution</h3>
+          <p>Simplifies advanced information into clear, understandable language.</p>
+          <div class="benefit">Benefit: Broader accessibility</div>
+        </article>
+
+        <article class="card" data-order="4">
+          <div class="meta">Overall Impact</div>
+          <h3>Summary</h3>
+          <p>Perplexity AI combines accuracy, transparency, and real-time knowledge to make research faster, easier, and more reliable.</p>
+          <div class="benefit">Benefit: Transforms online search</div>
+        </article>
+      </div>
+    </section>
+
+
+
+    
+
+    <section class="slide">
+      <div class="slide-title">
+        <div class="slide-index">Slide 4</div>
+        <h2>Scopes for Future</h2>
+      </div>
+      <p>Exploring potential advancements and applications of AI technology.</p>
+      <div class="future">
+        <div class="top">
+          <div class="future1"><h3>Enterprise and Developer Integration:</h3><p>With upgraded APIs and enterprise-scale deployment options, future growth includes positioning Perplexity as a backend research and automation platform for business intelligence, analytics, and app development0</p></div>
+          <div class="future1"><h3>Expansion into Multimodal AI Systems</h3><p>Research is focused on integrating text, audio, video, and image understanding—turning Perplexity into a more holistic, multimodal assistant</p></div>
+          <div class="future1"><h3>Improved Accuracy and Reasoning</h3><p>Upcoming enhancements emphasize deeper reasoning abilities, better citation accuracy, and more diverse data sourcing to increase trust and reliability in responses</p></div>
+          <div class="future1"></div>
+        </div>
+        <br>
+        <div class="bot">
+          <div class="future2"><h3>Improved Accuracy and Reasoning</h3><p>Upcoming enhancements emphasize deeper reasoning abilities, better citation accuracy, and more diverse data sourcing to increase trust and reliability in responses</p></div>
+          <div class="future2"><h3>Mobile Integration and Accessibility</h3><p>The future roadmap includes optimized mobile applications with full-feature access, improving usability across smartphone ecosystems</p></div>
+          <div class="future2"><h3>Productivity and Collaboration Tools</h3><p>Perplexity aims to expand tools like “Spaces” and “Pages” for real-time team collaboration, shared research projects, and enterprise knowledge management.</p></div>
+        </div>
+      </div>
+      
+    </section>
+
+
+
+
+
+
+
+
+
+
+    <section class="slide"><div class="slide-title">
+        <div class="slide-index">Slide 5</div>
+        <h2>Subscription</h2>
+      </div>
+      <div>
+        <img src="Screenshot 2025-10-22 193924.png" width="800" height="600"> 
+      </div>
+    </section>
+
+
+
+    <section class="slide"><div class="slide-title">
+        <div class="slide-index">Slide 6</div>
+        <h2>Basic Technologies:</h2>
+      </div>
+      <div class="techno">
+        <div class="tops">Core Technologies:</div>
+        <br>
+        <div class="tops">Large Language Models:</div>
+        Utilizes advanced LLMs like OpenAI GPT-3.5, GPT-4, Claude, Mistral, and Gemini.
+        <br>
+        <div class="tops">Retrieval-Augmented Generation (RAG):</div>
+        Combines real-time internet search with AI-generated answers for up-to-date, precise responses.
+        <br>
+        <div class="tops">Citation-Based Answers:</div>
+        Displays sources alongside responses for transparency and trustworthiness.
+        <br>  
+        <div class="tops">Multimodal Input Support:</div>
+        Processes text, images, and documents (PDFs, etc.) to enhance context.
+        <br>
+        <div class="tops">Conversational AI Architecture:</div>
+        Enables follow-up questions and contextual understanding for smooth dialogue.
+        <br>  
+        <div class="tops">Enterprise Features:</div>
+        Includes file uploads, multi-model integrations, and deep research tools.
+        <br>  
+        <div class="tops">Continuous Improvement:</div>
+        Leveraging prompt tuning, human reviews, and fast iteration cycles.
+        
+
+      </div>
+    </section>
+
+
+
+    <section class="slide">
+      <div class="slide-title">
+        <div class="slide-index">Slide 7</div>
+        <h2>Perplexity API:</h2>
+      </div>
+      <div class="api">
+        <img src="1.png" width="600" height="400" class="columns">
+        <img src="2.png" width="600" height="400" class="columns">
+      </div>
+    </section>
+
+
+
+
+
+
+    <section class="slide">
+      <div class="slide-title">
+        <div class="slide-index">Slide 8</div>
+        <h2>Perplexity API:</h2>
+      </div>
+      <div class="api">
+        <img src="3.png" width="800" height="600" class="columns">
+      </div>
+    </section>
+
+
+    <section class="slide">
+      <div class="slide-title">
+        <div class="slide-index">Slide 9</div>
+        <h2>Tools in Perplexity AI:</h2>
+      </div>
+      <div class="techno">
+        <div class="tops">Pro Search</div>
+        This feature leverages advanced AI models to perform in-depth, multi-source web searches. It automatically compiles relevant data and summarizes it into verified, citation-backed answers. Pro Search users can choose specific models, such as GPT-5 or Claude 4.5 Sonnet, to tailor performance and reasoning depth [pplx-support:1][pplx-support:4].
+        <div class="tops">Deep Research</div>
+        Designed for longer, multi-step investigations, Deep Research conducts dozens of automatic searches and synthesizes insights into comprehensive reports. It mimics human research workflows and is capable of producing structured summaries and analyses within minutes [pplx-support:4].
+        <div class="tops">Perplexity Labs</div>
+        Labs allow users to transform ideas into tangible outputs like reports, dashboards, or code projects. Labs combine tools such as deep web browsing, code execution, and data visualization. It can autonomously perform 10+ minutes of self-supervised analysis to turn objectives into complete deliverables [pplx-support:8].
+        <div class="tops">AI Model Selector</div>
+        Subscribers can choose between various cutting-edge AI models, such as:
+        GPT-5 (OpenAI) – Expert reasoning, coding, and writing capabilities.
+        Claude 4.5 Sonnet (Anthropic) – Enhanced analytical and coding performance.
+        Sonar Large (LLaMA 3.1-based) – Optimized for Perplexity’s search engine.
+        Gemini 2.5 Pro (Google) – Advanced multimodal reasoning and creativity [pplx-support:1].
+        <div class="tops">Conversational Search and Context Memory</div>
+        Perplexity AI supports contextual conversation, remembering previous queries for seamless follow-ups. It responds in a natural, expert-like dialogue and includes citation transparency in every answer [pplx-support:4][pplx-support:5].
+        <div class="tops">Enterprise Tools — Max Assistant</div>
+        In enterprise environments, Max Assistant extends Perplexity’s capabilities into organizational productivity tools, offering collaborative reasoning, automated data handling, and secure document synthesis
+      </div>
+    </section>
+
+
+
+
+
+    <section class="slide"><h2>Slide 10 – Thank You</h2><p>Presented by <span class="highlight"> <br>Alivo Das <br> Asmita Roy <br> Serma Soren <br></span> |PRINCIPLE AND APPLICATIONS OF AI Class 2025|</p></section>
+  </div>
+
+  <!-- Matrix Animation Script -->
+  <script>
+    // run setup after DOM ready to ensure layout sizes are calculated
+    document.addEventListener('DOMContentLoaded', () => {
+      const canvas = document.getElementById("matrixCanvas");
+      const ctx = canvas.getContext("2d");
+
+      function resizeCanvas() {
+        canvas.height = window.innerHeight;
+        canvas.width = window.innerWidth;
+      }
+      resizeCanvas();
+
+      canvas.style.pointerEvents = 'none'; // ensure clicks reach elements above canvas
+
+      const letters = "01";
+      const fontSize = 18;
+      let columns = Math.floor(canvas.width / fontSize);
+      let drops = Array(columns).fill(1);
+
+      function draw() {
+        ctx.fillStyle = "rgba(0, 0, 0, 0.12)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "#00ff88";
+        ctx.font = fontSize + "px monospace";
+
+        for (let i = 0; i < drops.length; i++) {
+          const text = letters.charAt(Math.floor(Math.random() * letters.length));
+          ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+          if (drops[i] * fontSize > canvas.height && Math.random() > 0.98) {
+            drops[i] = 0;
+          }
+          drops[i]++;
+        }
+      }
+
+      let interval = setInterval(draw, 85);
+
+      window.addEventListener("resize", () => {
+        resizeCanvas();
+        columns = Math.floor(canvas.width / fontSize);
+        drops = Array(columns).fill(1);
+      });
+
+      // Reveal animation for cards when slide is in view
+      function revealCardsInSlide(slideEl) {
+        const cards = slideEl.querySelectorAll('.card');
+        cards.forEach((card, i) => {
+          setTimeout(() => card.classList.add('visible'), i * 110);
+        });
+      }
+
+      // IntersectionObserver to animate when slides enter viewport
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            revealCardsInSlide(entry.target);
+          }
+        });
+      }, { threshold: 0.25 });
+
+      document.querySelectorAll('.slide').forEach(slide => observer.observe(slide));
+    });
+  </script>
+</body>
+</html>
