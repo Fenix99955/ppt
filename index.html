@@ -103,7 +103,7 @@ body {
 .slide {
   width: 90%;
   max-width: 10000px;
-  height: 1150px; /* mimic PPT size */
+  height: auto;
   background: rgba(0, 0, 0, 0.25);
   border: 1px solid rgba(0, 255, 128, 0.6);
   box-shadow: 0 0 25px rgba(0, 255, 128, 0.25);
@@ -150,9 +150,6 @@ li::before {
   color: #00ff99;
   text-shadow: 0 0 6px #00ff99;
 }
-
-
-
 
     /* Layout fixes to prevent text superimposing */
     
@@ -238,7 +235,7 @@ li::before {
 
     .card.visible { animation: fadeUp 420ms cubic-bezier(.2,.9,.25,1) forwards; }
 
-    .slide-title { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+    .slide-title { display:flex; align-items:center; gap:12px; flex-wrap:wrap; justify-content: center; }
     .slide-index {
       background: rgba(255,255,255,0.06);
       color: #dfffee;
@@ -257,47 +254,499 @@ li::before {
       pointer-events: none; /* prevent canvas from blocking interactions */
     }
 
+    /* --- New polished animation keyframes --- */
+    @keyframes slideInUp {
+      from { opacity: 0; transform: translateY(36px) scale(.995); filter: blur(6px); }
+      to   { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+    }
+
+    @keyframes slideInLeft {
+      from { opacity: 0; transform: translateX(-28px); filter: blur(6px); }
+      to   { opacity: 1; transform: translateX(0); filter: blur(0); }
+    }
+
+    @keyframes slideInRight {
+      from { opacity: 0; transform: translateX(28px); filter: blur(6px); }
+      to   { opacity: 1; transform: translateX(0); filter: blur(0); }
+    }
+
+    @keyframes scaleIn {
+      from { opacity: 0; transform: scale(.96); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes floatY {
+      0%   { transform: translateY(0px); }
+      50%  { transform: translateY(-8px); }
+      100% { transform: translateY(0px); }
+    }
+
+    @keyframes neonPulse {
+      0%,100% { text-shadow: 0 0 8px rgba(0,255,153,0.25); color: #00ff99; }
+      50%     { text-shadow: 0 0 28px rgba(0,255,153,0.5); color: #bfffdc; }
+    }
+
+    @keyframes shimmer {
+      0% { background-position: -120% 0; }
+      100% { background-position: 220% 0; }
+    }
+
+    @keyframes wobble {
+      0% { transform: rotateZ(-1deg) translateY(0); }
+      50% { transform: rotateZ(1deg) translateY(-4px); }
+      100% { transform: rotateZ(-1deg) translateY(0); }
+    }
+
+    @keyframes underlineGrow {
+      from { width: 0; opacity: 0; }
+      to   { width: 100%; opacity: 1; }
+    }
+
+    @keyframes bounceIn {
+      0% { opacity: 0; transform: scale(0.8) translateY(20px); }
+      50% { transform: scale(1.05); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes glow {
+      0%, 100% { box-shadow: 0 0 20px rgba(0,255,153,0.2); }
+      50% { box-shadow: 0 0 40px rgba(0,255,153,0.4); }
+    }
+
+    /* --- Utility animation classes --- */
+    .animate-slide-up { animation: slideInUp 520ms cubic-bezier(.2,.9,.25,1) both; }
+    .animate-slide-left { animation: slideInLeft 520ms cubic-bezier(.2,.9,.25,1) both; }
+    .animate-slide-right { animation: slideInRight 520ms cubic-bezier(.2,.9,.25,1) both; }
+    .animate-scale-in { animation: scaleIn 420ms cubic-bezier(.2,.9,.25,1) both; }
+    .float-slow { animation: floatY 6s ease-in-out infinite; }
+    .neon-pulse { animation: neonPulse 2.4s ease-in-out infinite; }
+    .wobble-hover { transition: transform .28s ease; will-change: transform; }
+    .bounce-in { animation: bounceIn 600ms cubic-bezier(.34,.66,.66,1) both; }
+    .glow-effect { animation: glow 2s ease-in-out infinite; }
+
+    /* INDEX PAGE STYLES */
+    .index-slide {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 24px;
+      padding: 60px 40px;
+      animation: scaleIn 520ms cubic-bezier(.2,.9,.25,1) both;
+    }
+
+    .index-title {
+      font-size: 3.2rem;
+      color: #00ff99;
+      text-shadow: 0 0 20px #00ff99;
+      margin-bottom: 12px;
+      text-align: center;
+      animation: slideInUp 620ms cubic-bezier(.2,.9,.25,1) both;
+      font-weight: 800;
+    }
+
+    .index-subtitle {
+      color: #a6fff0;
+      font-size: 1.28rem;
+      text-align: center;
+      max-width: 800px;
+      margin-bottom: 32px;
+      animation: slideInUp 720ms cubic-bezier(.2,.9,.25,1) both;
+      line-height: 1.5;
+    }
+
+    .index-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      width: 100%;
+      max-width: 1200px;
+    }
+
+    .index-link {
+      background: linear-gradient(135deg, rgba(0,255,153,0.08) 0%, rgba(0,255,153,0.03) 100%);
+      border: 1.5px solid rgba(0,255,153,0.18);
+      padding: 24px;
+      border-radius: 12px;
+      color: #eafff3;
+      text-decoration: none;
+      transition: all .32s cubic-bezier(.2,.9,.25,1);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(16px);
+      will-change: transform;
+    }
+
+    .index-link::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0) 0%, rgba(0,255,153,0.02) 100%);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .32s ease;
+    }
+
+    .index-link.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .index-link:hover {
+      transform: translateY(-12px) scale(1.02);
+      box-shadow: 0 24px 60px rgba(0,255,153,0.12), inset 0 1px 0 rgba(255,255,255,0.08);
+      border-color: rgba(0,255,153,0.35);
+      background: linear-gradient(135deg, rgba(0,255,153,0.12) 0%, rgba(0,255,153,0.06) 100%);
+    }
+
+    .index-link:hover::before {
+      opacity: 1;
+    }
+
+    .index-link .link-number {
+      font-size: 0.85rem;
+      color: rgba(0,255,153,0.6);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .index-link .link-title {
+      color: #00ff99;
+      font-weight: 800;
+      font-size: 1.18rem;
+      text-shadow: 0 0 8px rgba(0,255,153,0.25);
+    }
+
+    .index-link .link-desc {
+      color: #cfeee0;
+      font-size: 0.95rem;
+      line-height: 1.4;
+    }
+
+    .index-badge {
+      display: inline-block;
+      background: rgba(0,255,153,0.12);
+      color: #79ffd6;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin-top: 8px;
+      width: fit-content;
+    }
+
+    .index-footer {
+      margin-top: 48px;
+      text-align: center;
+      color: #9feed8;
+      font-size: .9rem;
+      animation: slideInUp 820ms cubic-bezier(.2,.9,.25,1) both;
+    }
+
+    .index-footer a {
+      color: #00ff99;
+      text-decoration: none;
+      transition: all .28s ease;
+    }
+
+    .index-footer a:hover {
+      text-shadow: 0 0 12px #00ff99;
+    }
+
     /* responsive tweaks */
     @media (max-width:700px){
       .slide { padding: 22px; min-height: auto; }
       .slide p { font-size: 0.95rem; }
       .presentation { margin: 4vh auto; gap: 18px; }
+      .index-title { font-size: 2.2rem; }
+      .index-subtitle { font-size: 1rem; }
+      .index-container { grid-template-columns: 1fr; }
     }
+
+    /* Prefer reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; transition: none !important; }
+    }
+
+    /* References section styles */
+.references-container {
+  text-align: left;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  animation: slideInUp 520ms cubic-bezier(.2,.9,.25,1) both;
+}
+
+.ref-section {
+  background: linear-gradient(135deg, rgba(0,255,153,0.04) 0%, rgba(0,255,153,0.01) 100%);
+  border-left: 4px solid #00ff99;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  transition: all .32s cubic-bezier(.2,.9,.25,1);
+  animation: slideInUp 520ms cubic-bezier(.2,.9,.25,1) both;
+}
+
+.ref-section:nth-child(1) { animation-delay: 0ms; }
+.ref-section:nth-child(2) { animation-delay: 60ms; }
+.ref-section:nth-child(3) { animation-delay: 120ms; }
+.ref-section:nth-child(4) { animation-delay: 180ms; }
+.ref-section:nth-child(5) { animation-delay: 240ms; }
+.ref-section:nth-child(6) { animation-delay: 300ms; }
+.ref-section:nth-child(7) { animation-delay: 360ms; }
+.ref-section:nth-child(8) { animation-delay: 420ms; }
+.ref-section:nth-child(9) { animation-delay: 480ms; }
+.ref-section:nth-child(10) { animation-delay: 540ms; }
+
+.ref-section:hover {
+  background: linear-gradient(135deg, rgba(0,255,153,0.08) 0%, rgba(0,255,153,0.03) 100%);
+  border-left-color: #79ffd6;
+  box-shadow: 0 8px 32px rgba(0,255,153,0.12);
+  transform: translateX(6px);
+}
+
+.ref-category {
+  color: #00ff99;
+  font-size: 1.15rem;
+  font-weight: 800;
+  text-shadow: 0 0 12px rgba(0,255,153,0.3);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  letter-spacing: 0.5px;
+}
+
+.ref-list {
+  list-style: none;
+  padding-left: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ref-list li {
+  background: rgba(0,0,0,0.25);
+  padding: 12px 16px;
+  border-radius: 8px;
+  border-left: 2px solid rgba(0,255,153,0.25);
+  transition: all .28s cubic-bezier(.2,.9,.25,1);
+  color: #cfeee0;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.ref-list li:hover {
+  background: rgba(0,255,153,0.06);
+  border-left-color: #00ff99;
+  transform: translateX(8px);
+  box-shadow: inset 0 0 12px rgba(0,255,153,0.08);
+  color: #bfffdc;
+}
+
+.ref-list li strong {
+  color: #79ffd6;
+  display: block;
+  margin-bottom: 4px;
+  font-weight: 700;
+}
+
+.ref-list li a {
+  color: #a6fff0;
+  text-decoration: none;
+  transition: all .2s ease;
+  word-break: break-all;
+}
+
+.ref-list li a:hover {
+  color: #00ff99;
+  text-shadow: 0 0 8px rgba(0,255,153,0.4);
+}
+
+.ref-desc {
+  display: block;
+  color: #a6fff0;
+  font-size: 0.9rem;
+  margin-top: 6px;
+  font-style: italic;
+  opacity: 0.9;
+}
+
+.ref-footer {
+  background: linear-gradient(135deg, rgba(0,255,153,0.1) 0%, rgba(0,255,153,0.04) 100%);
+  border-top: 2px solid rgba(0,255,153,0.2);
+  border-radius: 12px;
+  padding: 18px;
+  margin-top: 16px;
+  text-align: center;
+  color: #a6fff0;
+  font-size: 0.92rem;
+  box-shadow: inset 0 1px 0 rgba(0,255,153,0.1);
+}
+
+.ref-footer p {
+  margin: 6px 0;
+  color: #cfeee0;
+  line-height: 1.5;
+}
+
+.ref-footer strong {
+  color: #00ff99;
+  font-weight: 700;
+}
+
+/* Responsive design */
+@media (max-width:900px) {
+  .references-container { gap: 16px; }
+  .ref-section { padding: 16px; }
+  .ref-category { font-size: 1.05rem; }
+  .ref-list li { padding: 10px 14px; font-size: 0.9rem; }
+  .ref-list li strong { font-size: 0.95rem; }
+  .ref-desc { font-size: 0.85rem; }
+}
+
+@media (max-width:700px) {
+  .references-container { gap: 12px; }
+  .ref-section { padding: 14px; border-left-width: 3px; }
+  .ref-category { font-size: 0.95rem; gap: 6px; }
+  .ref-list li { padding: 8px 12px; font-size: 0.85rem; }
+  .ref-list li strong { margin-bottom: 3px; }
+  .ref-desc { font-size: 0.8rem; margin-top: 4px; }
+  .ref-footer { padding: 14px; font-size: 0.85rem; }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .ref-section, .ref-list li { animation: none !important; transition: none !important; }
+}
   </style>
 </head>
+
 <body>
   <!-- Fullscreen Matrix Background -->
   <canvas id="matrixCanvas"></canvas>
 
   <!-- Presentation Container -->
   <div class="presentation">
-    <section class="slide"><h1>PERPLEXITY AI <br>Revolutionizing Information Access</h1><p></p></section>
+    <!-- COVER SLIDE (FIRST) -->
+    <section class="slide" id="slide-cover">
+      <h1>PERPLEXITY AI <br>Revolutionizing Information Access</h1>
+      <p></p>
+    </section>
+
+    <!-- INDEX PAGE (SECOND - MOVED HERE) -->
+    <section class="slide index-slide" id="index-page">
+      <h1 class="index-title">Presentation Index</h1>
+      <p class="index-subtitle">Navigate through all topics covering Perplexity AI — History, Solutions, Technologies, and Future</p>
+
+      <div class="index-container" role="navigation" aria-label="presentation index">
+        <a class="index-link" href="#slide-1" onclick="smoothScroll(event)">
+          <span class="link-number">Slide 1</span>
+          <span class="link-title">History</span>
+          <span class="link-desc">Key milestones and background of Perplexity AI development</span>
+          <span class="index-badge">Background</span>
+        </a>
+
+        <a class="index-link" href="#slide-2" onclick="smoothScroll(event)">
+          <span class="link-number">Slide 2</span>
+          <span class="link-title">Key Problems Solved</span>
+          <span class="link-desc">Problems Perplexity addresses and innovative solutions</span>
+          <span class="index-badge">Solutions</span>
+        </a>
+
+        <a class="index-link" href="#slide-3" onclick="smoothScroll(event)">
+          <span class="link-number">Slide 3</span>
+          <span class="link-title">Additional Solutions</span>
+          <span class="link-desc">Features, benefits and practical use-cases for research</span>
+          <span class="index-badge">Features</span>
+        </a>
+
+        <a class="index-link" href="#slide-4" onclick="smoothScroll(event)">
+          <span class="link-number">Slide 4</span>
+          <span class="link-title">Future Scope</span>
+          <span class="link-desc">Roadmap: multimodal AI, enterprise, mobile integration</span>
+          <span class="index-badge">Roadmap</span>
+        </a>
+
+        <a class="index-link" href="#slide-5" onclick="smoothScroll(event)">
+          <span class="link-number">Slide 5</span>
+          <span class="link-title">Subscription Plans</span>
+          <span class="link-desc">Overview of free tier and Pro features with pricing</span>
+          <span class="index-badge">Pricing</span>
+        </a>
+
+        <a class="index-link" href="#slide-6" onclick="smoothScroll(event)">
+          <span class="link-number">Slide 6</span>
+          <span class="link-title">Core Technologies</span>
+          <span class="link-desc">LLMs, RAG, citations, multimodal support and architecture</span>
+          <span class="index-badge">Tech</span>
+        </a>
+
+        <a class="index-link" href="#slide-7" onclick="smoothScroll(event)">
+          <span class="link-number">Slide 7</span>
+          <span class="link-title">Perplexity API (1/2)</span>
+          <span class="link-desc">API overview, endpoints, and integration examples</span>
+          <span class="index-badge">Dev</span>
+        </a>
+
+        <a class="index-link" href="#slide-8" onclick="smoothScroll(event)">
+          <span class="link-number">Slide 8</span>
+          <span class="link-title">Perplexity API (2/2)</span>
+          <span class="link-desc">Advanced API features, best practices and use-cases</span>
+          <span class="index-badge">Dev</span>
+        </a>
+
+        <a class="index-link" href="#slide-9" onclick="smoothScroll(event)">
+          <span class="link-number">Slide 9</span>
+          <span class="link-title">Tools & Features</span>
+          <span class="link-desc">Pro Search, Deep Research, Labs, Model Selector explained</span>
+          <span class="index-badge">Tools</span>
+        </a>
+
+        <a class="index-link" href="#slide-10" onclick="smoothScroll(event)">
+          <span class="link-number">Slide 10</span>
+          <span class="link-title">References</span>
+          <span class="link-desc">Comprehensive sources, datasets, and research materials</span>
+          <span class="index-badge">Sources</span>
+        </a>
+
+        <a class="index-link" href="#slide-11" onclick="smoothScroll(event)">
+          <span class="link-number">Slide 11</span>
+          <span class="link-title">Thank You</span>
+          <span class="link-desc">Credits, presenters and closing remarks</span>
+          <span class="index-badge">End</span>
+        </a>
+      </div>
+
+      <div class="index-footer">
+        <p>📚 Click any link above or scroll down to view slides sequentially</p>
+        <p style="margin-top: 12px; font-size: .85rem;">Presented by Alivo Das, Asmita Roy, Serma Soren</p>
+      </div>
+    </section>
     
-
-
-
-
-
-
-
-
-
-
-
-    <section class="slide"><div class="slide-title">
+    <!-- Slide 1: HISTORY -->
+    <section class="slide" id="slide-1"><div class="slide-title">
         <div class="slide-index">Slide 1</div>
         <h2>History of Perplexity AI</h2>
       </div>
       <p class="lead">Key milestones in the development of Perplexity AI.</p>
       <br>
       <div class="History">
-        <img src="bd24bacd-092a-4f38-b855-bc4ef64d27c2.png" width="900" height="900">
+        <img src="bd24bacd-092a-4f38-b855-bc4ef64d27c2.png" width="900" height="900" alt="history">
       </div>
-      
     </section>
 
-    <!-- Slide 5: Perplexity AI – Key Problems Solved -->
-    <section class="slide" id="slide-5">
+    <!-- Slide 2: PROBLEMS SOLVED -->
+    <section class="slide" id="slide-2">
       <div class="slide-title">
         <div class="slide-index">Slide 2</div>
         <h2>Perplexity AI – Key Problems Solved</h2>
@@ -361,8 +810,8 @@ li::before {
       </div>
     </section>
 
-    <!-- Slide 6: Additional Solutions & Benefits -->
-    <section class="slide" id="slide-6">
+    <!-- Slide 3: ADDITIONAL SOLUTIONS -->
+    <section class="slide" id="slide-3">
       <div class="slide-title">
         <div class="slide-index">Slide 3</div>
         <h2>Additional Solutions & Benefits</h2>
@@ -415,11 +864,8 @@ li::before {
       </div>
     </section>
 
-
-
-    
-
-    <section class="slide">
+    <!-- Slide 4: FUTURE SCOPE -->
+    <section class="slide" id="slide-4">
       <div class="slide-title">
         <div class="slide-index">Slide 4</div>
         <h2>Scopes for Future</h2>
@@ -427,42 +873,31 @@ li::before {
       <p>Exploring potential advancements and applications of AI technology.</p>
       <div class="future">
         <div class="top">
-          <div class="future1"><h3>Enterprise and Developer Integration:</h3><p>With upgraded APIs and enterprise-scale deployment options, future growth includes positioning Perplexity as a backend research and automation platform for business intelligence, analytics, and app development0</p></div>
+          <div class="future1"><h3>Enterprise and Developer Integration:</h3><p>With upgraded APIs and enterprise-scale deployment options, future growth includes positioning Perplexity as a backend research and automation platform for business intelligence, analytics, and app development</p></div>
           <div class="future1"><h3>Expansion into Multimodal AI Systems</h3><p>Research is focused on integrating text, audio, video, and image understanding—turning Perplexity into a more holistic, multimodal assistant</p></div>
           <div class="future1"><h3>Improved Accuracy and Reasoning</h3><p>Upcoming enhancements emphasize deeper reasoning abilities, better citation accuracy, and more diverse data sourcing to increase trust and reliability in responses</p></div>
-          <div class="future1"></div>
         </div>
         <br>
         <div class="bot">
           <div class="future2"><h3>Improved Accuracy and Reasoning</h3><p>Upcoming enhancements emphasize deeper reasoning abilities, better citation accuracy, and more diverse data sourcing to increase trust and reliability in responses</p></div>
           <div class="future2"><h3>Mobile Integration and Accessibility</h3><p>The future roadmap includes optimized mobile applications with full-feature access, improving usability across smartphone ecosystems</p></div>
-          <div class="future2"><h3>Productivity and Collaboration Tools</h3><p>Perplexity aims to expand tools like “Spaces” and “Pages” for real-time team collaboration, shared research projects, and enterprise knowledge management.</p></div>
+          <div class="future2"><h3>Productivity and Collaboration Tools</h3><p>Perplexity aims to expand tools like "Spaces" and "Pages" for real-time team collaboration, shared research projects, and enterprise knowledge management.</p></div>
         </div>
       </div>
-      
     </section>
 
-
-
-
-
-
-
-
-
-
-    <section class="slide"><div class="slide-title">
+    <!-- Slide 5: SUBSCRIPTION -->
+    <section class="slide" id="slide-5"><div class="slide-title">
         <div class="slide-index">Slide 5</div>
         <h2>Subscription</h2>
       </div>
       <div>
-        <img src="Screenshot 2025-10-22 193924.png" width="800" height="600"> 
+        <img src="Screenshot 2025-10-22 193924.png" width="800" height="600" alt="subscription plans"> 
       </div>
     </section>
 
-
-
-    <section class="slide"><div class="slide-title">
+    <!-- Slide 6: TECHNOLOGIES -->
+    <section class="slide" id="slide-6"><div class="slide-title">
         <div class="slide-index">Slide 6</div>
         <h2>Basic Technologies:</h2>
       </div>
@@ -489,70 +924,190 @@ li::before {
         <br>  
         <div class="tops">Continuous Improvement:</div>
         Leveraging prompt tuning, human reviews, and fast iteration cycles.
-        
-
       </div>
     </section>
 
-
-
-    <section class="slide">
+    <!-- Slide 7: API (1/2) -->
+    <section class="slide" id="slide-7">
       <div class="slide-title">
         <div class="slide-index">Slide 7</div>
         <h2>Perplexity API:</h2>
       </div>
       <div class="api">
-        <img src="1.png" width="600" height="400" class="columns">
-        <img src="2.png" width="600" height="400" class="columns">
+        <img src="1.png" width="600" height="400" class="columns" alt="api 1">
+        <img src="2.png" width="600" height="400" class="columns" alt="api 2">
       </div>
     </section>
 
-
-
-
-
-
-    <section class="slide">
+    <!-- Slide 8: API (2/2) -->
+    <section class="slide" id="slide-8">
       <div class="slide-title">
         <div class="slide-index">Slide 8</div>
         <h2>Perplexity API:</h2>
       </div>
       <div class="api">
-        <img src="3.png" width="800" height="600" class="columns">
+        <img src="3.png" width="800" height="600" class="columns" alt="api 3">
       </div>
     </section>
 
-
-    <section class="slide">
+    <!-- Slide 9: TOOLS -->
+    <section class="slide" id="slide-9">
       <div class="slide-title">
         <div class="slide-index">Slide 9</div>
         <h2>Tools in Perplexity AI:</h2>
       </div>
       <div class="techno">
         <div class="tops">Pro Search</div>
-        This feature leverages advanced AI models to perform in-depth, multi-source web searches. It automatically compiles relevant data and summarizes it into verified, citation-backed answers. Pro Search users can choose specific models, such as GPT-5 or Claude 4.5 Sonnet, to tailor performance and reasoning depth [pplx-support:1][pplx-support:4].
+        This feature leverages advanced AI models to perform in-depth, multi-source web searches. It automatically compiles relevant data and summarizes it into verified, citation-backed answers. Pro Search users can choose specific models, such as GPT-5 or Claude 4.5 Sonnet, to tailor performance and reasoning depth.
         <div class="tops">Deep Research</div>
-        Designed for longer, multi-step investigations, Deep Research conducts dozens of automatic searches and synthesizes insights into comprehensive reports. It mimics human research workflows and is capable of producing structured summaries and analyses within minutes [pplx-support:4].
+        Designed for longer, multi-step investigations, Deep Research conducts dozens of automatic searches and synthesizes insights into comprehensive reports. It mimics human research workflows and is capable of producing structured summaries and analyses within minutes.
         <div class="tops">Perplexity Labs</div>
-        Labs allow users to transform ideas into tangible outputs like reports, dashboards, or code projects. Labs combine tools such as deep web browsing, code execution, and data visualization. It can autonomously perform 10+ minutes of self-supervised analysis to turn objectives into complete deliverables [pplx-support:8].
+        Labs allow users to transform ideas into tangible outputs like reports, dashboards, or code projects. Labs combine tools such as deep web browsing, code execution, and data visualization. It can autonomously perform 10+ minutes of self-supervised analysis to turn objectives into complete deliverables.
         <div class="tops">AI Model Selector</div>
-        Subscribers can choose between various cutting-edge AI models, such as:
-        GPT-5 (OpenAI) – Expert reasoning, coding, and writing capabilities.
-        Claude 4.5 Sonnet (Anthropic) – Enhanced analytical and coding performance.
-        Sonar Large (LLaMA 3.1-based) – Optimized for Perplexity’s search engine.
-        Gemini 2.5 Pro (Google) – Advanced multimodal reasoning and creativity [pplx-support:1].
+        Subscribers can choose between various cutting-edge AI models, such as: GPT-5, Claude 4.5 Sonnet, Sonar Large, Gemini 2.5 Pro and others.
         <div class="tops">Conversational Search and Context Memory</div>
-        Perplexity AI supports contextual conversation, remembering previous queries for seamless follow-ups. It responds in a natural, expert-like dialogue and includes citation transparency in every answer [pplx-support:4][pplx-support:5].
+        Perplexity AI supports contextual conversation, remembering previous queries for seamless follow-ups. It responds in a natural, expert-like dialogue and includes citation transparency in every answer.
         <div class="tops">Enterprise Tools — Max Assistant</div>
-        In enterprise environments, Max Assistant extends Perplexity’s capabilities into organizational productivity tools, offering collaborative reasoning, automated data handling, and secure document synthesis
+        In enterprise environments, Max Assistant extends Perplexity's capabilities into organizational productivity tools, offering collaborative reasoning, automated data handling, and secure document synthesis
       </div>
     </section>
 
+    <!-- Slide 10: REFERENCES (2ND LAST) -->
+    <section class="slide" id="slide-10">
+      <div class="slide-title">
+        <div class="slide-index">Slide 10</div>
+        <h2>References & Sources</h2>
+      </div>
+      <div class="references-container">
+        <div class="ref-section">
+          <h3 class="ref-category">📚 Official Documentation & Company Resources</h3>
+          <ul class="ref-list">
+            <li><strong>Perplexity AI Official Website</strong><br><span class="ref-desc">https://www.perplexity.ai - Primary source for product features, pricing, and company updates</span></li>
+            <li><strong>Perplexity API Documentation</strong><br><span class="ref-desc">https://docs.perplexity.ai - Comprehensive API reference, authentication methods, and usage examples for developers</span></li>
+            <li><strong>Perplexity Research Blog & Updates</strong><br><span class="ref-desc">https://www.perplexity.ai/blog - Technical articles on RAG implementation, LLM advancements, and product roadmap</span></li>
+            <li><strong>Company Mission & Vision Statement</strong><br><span class="ref-desc">Founded on principles of transparency, accuracy, accessibility, and democratizing AI-powered research</span></li>
+          </ul>
+        </div>
 
+        <div class="ref-section">
+          <h3 class="ref-category">🤖 Large Language Models & AI Foundations</h3>
+          <ul class="ref-list">
+            <li><strong>OpenAI GPT-4 & GPT-3.5 Research Papers</strong><br><span class="ref-desc">https://openai.com/research/gpt-4 - Foundation models for advanced reasoning and answer generation in Perplexity</span></li>
+            <li><strong>Anthropic Claude - Constitutional AI</strong><br><span class="ref-desc">https://www.anthropic.com - Constitutional AI approach for safer, more reliable and aligned outputs</span></li>
+            <li><strong>Google Deepmind Gemini</strong><br><span class="ref-desc">https://deepmind.google/technologies/gemini - Multimodal LLM for text, image, video, and code understanding</span></li>
+            <li><strong>Mistral AI Models</strong><br><span class="ref-desc">https://mistral.ai - Open-source and commercial models powering diverse use cases and alternatives</span></li>
+            <li><strong>Meta LLaMA Models</strong><br><span class="ref-desc">https://www.meta.com/research/llama - Open-source language models for research and applications</span></li>
+          </ul>
+        </div>
 
+        <div class="ref-section">
+          <h3 class="ref-category">🔍 Retrieval-Augmented Generation (RAG) & Search</h3>
+          <ul class="ref-list">
+            <li><strong>RAG Foundational Paper</strong><br><span class="ref-desc">"Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks" - Lewis et al., Facebook AI Research - Core methodology for combining search with LLMs</span></li>
+            <li><strong>Real-Time Web Search Integration</strong><br><span class="ref-desc">Combines LLM capabilities with live internet data fetching for up-to-date, current answers</span></li>
+            <li><strong>Citation & Source Tracking Systems</strong><br><span class="ref-desc">Embedded citation mechanisms for transparency, fact-checking, and verifiable information retrieval</span></li>
+            <li><strong>Information Retrieval & Ranking</strong><br><span class="ref-desc">BM25, TF-IDF, and neural ranking models for effective document retrieval and relevance scoring</span></li>
+          </ul>
+        </div>
 
+        <div class="ref-section">
+          <h3 class="ref-category">🛠️ Technologies, Frameworks & Tools</h3>
+          <ul class="ref-list">
+            <li><strong>Natural Language Processing (NLP)</strong><br><span class="ref-desc">Hugging Face, spaCy, NLTK - For text analysis, tokenization, and user intent recognition</span></li>
+            <li><strong>Web Crawling & Data Retrieval</strong><br><span class="ref-desc">Selenium, Beautiful Soup, Scrapy, APIs - For real-time information gathering and web scraping</span></li>
+            <li><strong>Vector Databases & Embeddings</strong><br><span class="ref-desc">Pinecone, Weaviate, Milvus, FAISS - Efficient semantic search and embedding storage for similarity matching</span></li>
+            <li><strong>Machine Learning Frameworks</strong><br><span class="ref-desc">TensorFlow, PyTorch - Model training, fine-tuning, and inference optimization</span></li>
+            <li><strong>Cloud Infrastructure</strong><br><span class="ref-desc">AWS, Google Cloud, Azure - Scalable deployment and distributed computing for production systems</span></li>
+          </ul>
+        </div>
 
-    <section class="slide"><h2>Slide 10 – Thank You</h2><p>Presented by <span class="highlight"> <br>Alivo Das <br> Asmita Roy <br> Serma Soren <br></span> |PRINCIPLE AND APPLICATIONS OF AI Class 2025|</p></section>
+        <div class="ref-section">
+          <h3 class="ref-category">📊 Research Datasets & Evaluation Benchmarks</h3>
+          <ul class="ref-list">
+            <li><strong>Common Crawl</strong><br><span class="ref-desc">https://commoncrawl.org - Large-scale web corpus and dataset for training and evaluation</span></li>
+            <li><strong>TREC (Text REtrieval Conference)</strong><br><span class="ref-desc">Information retrieval evaluation benchmarks and shared tasks for model assessment</span></li>
+            <li><strong>SQuAD (Stanford Question Answering Dataset)</strong><br><span class="ref-desc">Reading comprehension and QA model evaluation benchmark for testing answer generation</span></li>
+            <li><strong>Natural Questions Dataset</strong><br><span class="ref-desc">Real user queries collected from Google search for natural language understanding training</span></li>
+            <li><strong>HotpotQA & Multi-Hop Reasoning</strong><br><span class="ref-desc">Complex question answering requiring multi-step reasoning across documents</span></li>
+            <li><strong>MMLU (Massive Multitask Language Understanding)</strong><br><span class="ref-desc">Benchmark covering diverse academic knowledge areas for model evaluation</span></li>
+          </ul>
+        </div>
+
+        <div class="ref-section">
+          <h3 class="ref-category">🏢 Competitive & Market Analysis</h3>
+          <ul class="ref-list">
+            <li><strong>OpenAI ChatGPT</strong><br><span class="ref-desc">https://openai.com/chatgpt - Primary competitor in conversational AI and knowledge-based search</span></li>
+            <li><strong>Google Bard & Gemini</strong><br><span class="ref-desc">https://bard.google.com - Integrated AI assistant with native web search and multimodal capabilities</span></li>
+            <li><strong>Microsoft Copilot</strong><br><span class="ref-desc">https://copilot.microsoft.com - Enterprise AI integrated with Bing search and Office 365 ecosystem</span></li>
+            <li><strong>You.com Search Engine</strong><br><span class="ref-desc">Privacy-focused AI-powered search alternative with customizable features</span></li>
+            <li><strong>Brave Search & DuckDuckGo</strong><br><span class="ref-desc">Privacy-first search alternatives emphasizing user data protection</span></li>
+          </ul>
+        </div>
+
+        <div class="ref-section">
+          <h3 class="ref-category">📖 Academic & Industry Publications</h3>
+          <ul class="ref-list">
+            <li><strong>arXiv.org Preprints</strong><br><span class="ref-desc">https://arxiv.org - Preprints of cutting-edge research papers on AI, NLP, and machine learning</span></li>
+            <li><strong>IEEE Xplore & ACM Digital Library</strong><br><span class="ref-desc">Peer-reviewed conference proceedings and publications from leading research institutions</span></li>
+            <li><strong>Gartner AI & Analytics Magic Quadrant</strong><br><span class="ref-desc">Market trends analysis and technology assessments for AI platforms</span></li>
+            <li><strong>AI Safety & Ethics Research</strong><br><span class="ref-desc">Papers from OpenAI, Anthropic, DeepMind safety teams on responsible AI development</span></li>
+            <li><strong>NeurIPS, ICML, ICLR Conferences</strong><br><span class="ref-desc">Premier machine learning conferences for state-of-the-art research presentations</span></li>
+          </ul>
+        </div>
+
+        <div class="ref-section">
+          <h3 class="ref-category">🎓 Educational & Learning Resources</h3>
+          <ul class="ref-list">
+            <li><strong>Stanford CS224N: NLP with Deep Learning</strong><br><span class="ref-desc">https://web.stanford.edu/class/cs224n - Foundation concepts in language models and transformer architectures</span></li>
+            <li><strong>Fast.ai & DeepLearning.AI Courses</strong><br><span class="ref-desc">Practical deep learning, AI model training, and implementation tutorials</span></li>
+            <li><strong>Hugging Face Course & Documentation</strong><br><span class="ref-desc">https://huggingface.co/course - Transformer models, NLP, and practical tutorials with code examples</span></li>
+            <li><strong>Andrew Ng Machine Learning Specialization</strong><br><span class="ref-desc">Comprehensive machine learning fundamentals and neural networks foundations</span></li>
+            <li><strong>MIT OpenCourseWare - AI & ML Courses</strong><br><span class="ref-desc">https://ocw.mit.edu - Free university-level courses on AI, ML, and related topics</span></li>
+          </ul>
+        </div>
+
+        <div class="ref-section">
+          <h3 class="ref-category">💼 Enterprise, Business & Integration</h3>
+          <ul class="ref-list">
+            <li><strong>Perplexity Enterprise Tier & Pricing</strong><br><span class="ref-desc">Dedicated API access, custom integrations, SLA support, and enterprise features</span></li>
+            <li><strong>B2B Integration Guides & Documentation</strong><br><span class="ref-desc">Step-by-step guides for integrating Perplexity into business workflows and applications</span></li>
+            <li><strong>ROI & Business Case Studies</strong><br><span class="ref-desc">Enterprise adoption stories, measurable outcomes, and productivity improvements</span></li>
+            <li><strong>API Rate Limiting & Scalability</strong><br><span class="ref-desc">Information on throughput, costs, and scaling considerations for production deployments</span></li>
+          </ul>
+        </div>
+
+        <div class="ref-section">
+          <h3 class="ref-category">🔗 Developer Communities & Support</h3>
+          <ul class="ref-list">
+            <li><strong>GitHub - Perplexity AI Repositories</strong><br><span class="ref-desc">https://github.com - Open-source SDKs, libraries, and example implementations</span></li>
+            <li><strong>Stack Overflow</strong><br><span class="ref-desc">https://stackoverflow.com - Community Q&A, troubleshooting, and implementation help</span></li>
+            <li><strong>Discord & Slack Communities</strong><br><span class="ref-desc">Real-time developer discussions, peer support, and community knowledge sharing</span></li>
+            <li><strong>Reddit AI/ML Subreddits</strong><br><span class="ref-desc">r/MachineLearning, r/LanguageModels - Community discussions and trend analysis</span></li>
+          </ul>
+        </div>
+
+        <div class="ref-section">
+          <h3 class="ref-category">🔐 AI Safety, Ethics & Responsible Development</h3>
+          <ul class="ref-list">
+            <li><strong>Alignment Research Center (ARC)</strong><br><span class="ref-desc">Research on AI alignment and safe AI systems development</span></li>
+            <li><strong>Future of Humanity Institute - AI Safety</strong><br><span class="ref-desc">https://www.fhi.ox.ac.uk - Existential risk assessment and AI safety research</span></li>
+            <li><strong>OpenAI Safety & Policy Research</strong><br><span class="ref-desc">Papers on model safety, bias mitigation, and responsible deployment practices</span></li>
+            <li><strong>Bias & Fairness in Machine Learning</strong><br><span class="ref-desc">Research and tools for detecting and mitigating algorithmic bias</span></li>
+          </ul>
+        </div>
+
+        <div class="ref-footer">
+          <p><strong>Citation Format:</strong> Perplexity AI (2025). Revolutionizing Information Access Through AI-Powered Research. Presented by Alivo Das, Asmita Roy, Serma Soren. PRINCIPLE AND APPLICATIONS OF AI Class.</p>
+          <p style="margin-top: 12px; font-size: 0.9rem;"><strong>Last Updated:</strong> November 2025 | <strong>Presentation Context:</strong> Educational | <strong>License:</strong> Educational Use Only</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 11: THANK YOU (LAST) -->
+    <section class="slide" id="slide-11">
+      <h2>Slide 11 – Thank You</h2>
+      <p>Presented by <span class="highlight"><br>Alivo Das<br>Asmita Roy<br>Serma Soren<br></span>|PRINCIPLE AND APPLICATIONS OF AI Class 2025|</p>
+    </section>
   </div>
 
   <!-- Matrix Animation Script -->
@@ -599,6 +1154,12 @@ li::before {
         drops = Array(columns).fill(1);
       });
 
+      // stagger reveal for index links
+      const indexLinks = document.querySelectorAll('.index-links .index-link, .index-container .index-link');
+      indexLinks.forEach((el, i) => {
+        setTimeout(() => el.classList.add('show'), 220 + i * 80);
+      });
+
       // Reveal animation for cards when slide is in view
       function revealCardsInSlide(slideEl) {
         const cards = slideEl.querySelectorAll('.card');
@@ -612,12 +1173,104 @@ li::before {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
             revealCardsInSlide(entry.target);
+            // animate title
+            const title = entry.target.querySelector('.slide-title h1, .slide-title h2, .index-title');
+            if (title) title.classList.add('neon-pulse', 'float-slow');
+            entry.target.classList.add('animate-scale-in');
           }
         });
-      }, { threshold: 0.25 });
+      }, { threshold: 0.22 });
 
       document.querySelectorAll('.slide').forEach(slide => observer.observe(slide));
+
+      // subtle mouse parallax for matrix & slide tilt
+      // DISABLED FOR SLIDES 10 & 11 (References & Thank You)
+      const matrix = document.getElementById('matrixCanvas');
+      const referenceSlide = document.querySelector('#slide-10');
+      const thankYouSlide = document.querySelector('#slide-11');
+
+      document.addEventListener('mousemove', (e) => {
+        // Check if either reference or thank you slide is in view
+        const refInView = referenceSlide && referenceSlide.getBoundingClientRect().top < window.innerHeight && referenceSlide.getBoundingClientRect().bottom > 0;
+        const tyInView = thankYouSlide && thankYouSlide.getBoundingClientRect().top < window.innerHeight && thankYouSlide.getBoundingClientRect().bottom > 0;
+
+        // Skip parallax if on last two slides
+        if (refInView || tyInView) {
+          return;
+        }
+
+        const cx = window.innerWidth / 2;
+        const cy = window.innerHeight / 2;
+        const dx = (e.clientX - cx) / cx;
+        const dy = (e.clientY - cy) / cy;
+        
+        // gentle parallax for matrix background
+        if (matrix) matrix.style.transform = `translate3d(${dx * 6}px, ${dy * 6}px, 0) rotate(${dx * 0.6}deg)`;
+        
+        // tilt each visible slide slightly (except last two)
+        document.querySelectorAll('.slide').forEach((slide) => {
+          // Skip slide 10 and 11
+          if (slide.id === 'slide-10' || slide.id === 'slide-11') {
+            slide.style.transform = '';
+            return;
+          }
+
+          const rect = slide.getBoundingClientRect();
+          if (rect.top < window.innerHeight && rect.bottom > 0) {
+            const sx = (e.clientX - (rect.left + rect.width/2)) / rect.width;
+            const sy = (e.clientY - (rect.top + rect.height/2)) / rect.height;
+            const maxTilt = 3;
+            const tx = -sy * maxTilt;
+            const ty = sx * maxTilt;
+            slide.style.transform = `perspective(1000px) rotateX(${tx}deg) rotateY(${ty}deg) translateZ(0)`;
+          }
+        });
+      });
+
+      // reset slide transform when mouse leaves window
+      document.addEventListener('mouseleave', () => {
+        if (matrix) matrix.style.transform = '';
+        document.querySelectorAll('.slide').forEach(s => s.style.transform = '');
+      });
+
+      // add small hover tilt & touch-friendly scaling for cards
+      // DISABLED FOR SLIDES 10 & 11
+      document.querySelectorAll('.card').forEach(card => {
+        card.addEventListener('mousemove', (ev) => {
+          // Skip if card is in slide 10 or 11
+          if (card.closest('#slide-10') || card.closest('#slide-11')) {
+            card.style.transform = '';
+            return;
+          }
+
+          const r = card.getBoundingClientRect();
+          const px = (ev.clientX - r.left) / r.width;
+          const py = (ev.clientY - r.top) / r.height;
+          const rx = (py - 0.5) * 6;
+          const ry = (px - 0.5) * -6;
+          card.style.transform = `translateZ(20px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+        });
+        card.addEventListener('mouseleave', () => {
+          card.style.transform = '';
+        });
+        // small entrance bounce on click/tap
+        card.addEventListener('pointerdown', () => {
+          card.style.transition = 'transform .12s ease';
+          card.style.transform = 'scale(.992) translateY(2px)';
+          setTimeout(()=>card.style.transform='',120);
+        });
+      });
     });
+
+    // Smooth scroll function for index links
+    function smoothScroll(e) {
+      e.preventDefault();
+      const target = e.currentTarget.getAttribute('href');
+      const element = document.querySelector(target);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
   </script>
 </body>
 </html>
